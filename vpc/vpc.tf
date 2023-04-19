@@ -1,7 +1,7 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "4.0.1"
-  count   = 3
+  count   = var.vpc_number
 
   azs                  = var.azs
   cidr                 = "10.${count.index}.0.0/16"

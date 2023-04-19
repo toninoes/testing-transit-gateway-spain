@@ -1,12 +1,25 @@
-resource "aws_instance" "this" {
-  count = 2
+resource "aws_instance" "bastion" {
+  count = 1
 
-  ami                         = "ami-0a2ac5650064429f0" # Amazon Linux 2023 AMI 2023.0.20230329.0 - Spain
+  ami                         = var.ami
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.this.name
-  instance_type               = "t3.micro"
+  instance_type               = var.instance_type
   subnet_id                   = module.vpc[count.index].public_subnets[0]
   vpc_security_group_ids      = [aws_security_group.this[count.index].id]
+
+  tags = {
+    Name = "${var.project}-in-vpc-${count.index}-bastion"
+  }
+}
+
+resource "aws_instance" "this" {
+  count = var.vpc_number
+
+  ami                    = var.ami
+  instance_type          = var.instance_type
+  subnet_id              = module.vpc[count.index].private_subnets[0]
+  vpc_security_group_ids = [aws_security_group.this[count.index].id]
 
   tags = {
     Name = "${var.project}-in-vpc-${count.index}"
@@ -14,16 +27,24 @@ resource "aws_instance" "this" {
 }
 
 resource "aws_security_group" "this" {
-  count = 2
+  count = var.vpc_number
 
   name   = "${var.project}-sg-in-vpc-${count.index}"
   vpc_id = module.vpc[count.index].vpc_id
 
+  ingress {
+    cidr_blocks = ["10.0.0.0/8"]
+    description = "Allow ping from all EC2 in all my VPC"
+    from_port   = -1
+    protocol    = "icmp"
+    to_port     = -1
+  }
+
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    protocol    = "-1"
+    to_port     = 0
   }
 
   tags = {
@@ -32,7 +53,7 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_iam_instance_profile" "this" {
-  name = "${var.project}-ec2-profile"
+  name = "${var.project}-bastion-ec2-profile"
   role = aws_iam_role.this.name
 }
 
@@ -50,7 +71,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_role" "this" {
-  name                = "${var.project}-ec2-role"
+  name                = "${var.project}-bastion-ec2-role"
   path                = "/"
   assume_role_policy  = data.aws_iam_policy_document.this.json
   managed_policy_arns = [data.aws_iam_policy.this.arn]
