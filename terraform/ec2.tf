@@ -9,7 +9,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids      = [aws_security_group.this[count.index].id]
 
   tags = {
-    Name = "${var.project}-in-vpc-${count.index}-bastion"
+    Name = "EC2-${count.index}-bastion"
   }
 }
 
@@ -18,18 +18,19 @@ resource "aws_instance" "this" {
 
   ami                    = var.ami
   instance_type          = var.instance_type
+  key_name               = "tgw-ec2-keypair"
   subnet_id              = module.vpc[count.index].private_subnets[0]
   vpc_security_group_ids = [aws_security_group.this[count.index].id]
 
   tags = {
-    Name = "${var.project}-in-vpc-${count.index}"
+    Name = "EC2-${count.index}"
   }
 }
 
 resource "aws_security_group" "this" {
   count = var.vpc_number
 
-  name   = "${var.project}-sg-in-vpc-${count.index}"
+  name   = "EC2-${count.index}-SG"
   vpc_id = module.vpc[count.index].vpc_id
 
   ingress {
@@ -40,6 +41,14 @@ resource "aws_security_group" "this" {
     to_port     = -1
   }
 
+  ingress {
+    cidr_blocks = ["10.0.0.0/8"]
+    description = "Allow SSH in all EC2 in all my VPC"
+    from_port   = 22
+    protocol    = "tcp"
+    to_port     = 22
+  }
+
   egress {
     cidr_blocks = ["0.0.0.0/0"]
     from_port   = 0
@@ -48,12 +57,12 @@ resource "aws_security_group" "this" {
   }
 
   tags = {
-    Name = "${var.project}-sg-in-vpc-${count.index}"
+    Name = "EC2-${count.index}-SG"
   }
 }
 
 resource "aws_iam_instance_profile" "this" {
-  name = "${var.project}-bastion-ec2-profile"
+  name = "EC2-bastion-ec2-profile"
   role = aws_iam_role.this.name
 }
 
@@ -71,7 +80,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_role" "this" {
-  name                = "${var.project}-bastion-ec2-role"
+  name                = "EC2-bastion-ec2-role"
   path                = "/"
   assume_role_policy  = data.aws_iam_policy_document.this.json
   managed_policy_arns = [data.aws_iam_policy.this.arn]
@@ -79,4 +88,9 @@ resource "aws_iam_role" "this" {
 
 data "aws_iam_policy" "this" {
   name = "AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_key_pair" "this" {
+  key_name   = "tgw-ec2-keypair"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCJQy+41/1FwU7cKlei1slYsZ2LHgLPCkexfi8AlKRLlB4YRhIc148sSX7Tjmwk1gUfh/BV6HqG4e0Or6x7h4J8gvd+RMzVMHwEE7O764VbBs6xZ5TiieYFWu8nb6whfSVyuVSQC9CKsibz5xfAwkKPffD1oLmr2mt8yLBW4WwotAJktlhyu8+NCAnHTiSqitbygH0q5jWTXLvkWX3r3l/GEDvyq4z2IcdjeZxq1m78ijr/qsORabu5YqUgy/5cwomiOhr9Lu5gJA2RVoPpmHY5DrMrEYo++XOHfewYI7fSz6kbtlHNSCqVIeDNq3joWR2HjONf9FCFtZZvRffmjkHqhZUD8w/h8WHZZjdA3UG3dVq15J9XzqUixfnoxGlcFMYkwiAVJ/RPwlBxgSGmNnuDSodUUgChI4q6wXLG3VSEldDlhNow//4QTErZYVKKbB9lkrM+zD6ztfqRnHqyNz32wT2HFlzSJYF4WfNnzGTrals0rPmM1LZenMFWl5LrhJM= toni@hp"
 }

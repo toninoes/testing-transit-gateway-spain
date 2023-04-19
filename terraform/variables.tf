@@ -19,12 +19,6 @@ variable "name" {
   type        = string
 }
 
-variable "project" {
-  type        = string
-  description = "Project name"
-  default     = "tgw-poc"
-}
-
 variable "profile" {
   type        = string
   description = "Profile name configured in .aws"
