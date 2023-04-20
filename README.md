@@ -1,1 +1,2 @@
-# testing-transit-gateway-spain
+# Testing AWS Transit Gateway in Spain with Terraform
+After seeing the [AWS latest News](https://aws.amazon.com/es/about-aws/whats-new/2023/04/aws-transit-gateway-europe-spain-region/) that said "AWS Transit Gateway is now available in Europe (Spain) Region (eu-south-2)" the last April 14, 2023, i decided to test the service with Terraform, just for fun...
