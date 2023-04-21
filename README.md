@@ -152,6 +152,8 @@ In the previous scenario all private subnets of all VPC can reach to each other,
 
 ![Sc2](assets/tgw-sc-2.png)
 
+Apply terraform in [transit-gateway-scenario-2](transit-gateway-scenario-2) folder.
+
 ...in this case do not enable route table association and default route table propagation.
 
 ```terraform
