@@ -2,7 +2,7 @@
 resource "aws_ec2_transit_gateway" "this" {
   default_route_table_association = "enable"
   default_route_table_propagation = "enable"
-  description = "My beginner transit-gateway in spain"
+  description                     = "My beginner transit-gateway in spain"
 
   tags = {
     "Name" = "TGW-with-RT-association-propagation"
@@ -22,7 +22,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
   }
 }
 
-# Add route "10.0.0.0/8" via our TGW in all private-RT of our VPCs
+## Add route "10.0.0.0/8" via our TGW in all private-RT of our VPCs
 resource "aws_route" "route" {
   for_each = toset(data.aws_route_tables.this.ids)
 

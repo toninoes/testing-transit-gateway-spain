@@ -2,7 +2,7 @@
 resource "aws_ec2_transit_gateway" "this" {
   default_route_table_association = "disable"
   default_route_table_propagation = "disable"
-  description = "My beginner transit-gateway in spain"
+  description                     = "My beginner transit-gateway in spain"
 
   tags = {
     "Name" = "TGW-without-RT-association-propagation"
@@ -13,11 +13,11 @@ resource "aws_ec2_transit_gateway" "this" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
   count = var.vpc_number
 
-  subnet_ids         = data.aws_subnets.private[count.index].ids
+  subnet_ids                                      = data.aws_subnets.private[count.index].ids
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = false
-  transit_gateway_id = aws_ec2_transit_gateway.this.id
-  vpc_id             = data.aws_vpc.this[count.index].id
+  transit_gateway_id                              = aws_ec2_transit_gateway.this.id
+  vpc_id                                          = data.aws_vpc.this[count.index].id
 
 
   tags = {
@@ -25,13 +25,13 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
   }
 }
 
-# Create 3 Transit Gateway route tables...
+## Create 3 Transit Gateway route tables...
 resource "aws_ec2_transit_gateway_route_table" "this" {
   count = var.vpc_number
 
   transit_gateway_id = aws_ec2_transit_gateway.this.id
 
-  tags = { Name: "att-${count.index}-RT" }
+  tags = { Name : "att-${count.index}-RT" }
 }
 
 # ...and associate with corresponding VPC attachments

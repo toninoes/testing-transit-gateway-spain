@@ -23,5 +23,5 @@ data "aws_subnets" "private" {
 }
 
 data "aws_route_tables" "this" {
-  tags = { Type: "private" }
+  tags = { Type : "private" }
 }
