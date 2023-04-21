@@ -37,7 +37,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | profile | Profile name configured in .aws | `string` | `"toninoes-aws2"` | no |
 | region | AWS region to deploy this | `string` | n/a | yes |
-| vpc\_number | How many VPCs you want | `number` | `3` | no |
+| vpc\_number | Number of existing VPCs in this region to attach. | `number` | `3` | no |
 
 ## Outputs
 

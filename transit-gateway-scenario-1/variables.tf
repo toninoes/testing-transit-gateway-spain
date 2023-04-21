@@ -11,6 +11,6 @@ variable "region" {
 
 variable "vpc_number" {
   type        = number
-  description = "How many VPCs you want"
+  description = "Number of existing VPCs in this region to attach."
   default     = 3
 }
