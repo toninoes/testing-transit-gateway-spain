@@ -21,7 +21,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
 
 
   tags = {
-    "Name" = "att-${count.index}-rt"
+    "Name" = "att-${count.index}"
   }
 }
 
@@ -31,7 +31,7 @@ resource "aws_ec2_transit_gateway_route_table" "this" {
 
   transit_gateway_id = aws_ec2_transit_gateway.this.id
 
-  tags = { Name: "vpc-${count.index}-att" }
+  tags = { Name: "att-${count.index}-RT" }
 }
 
 # ...and associate with corresponding VPC attachments
@@ -66,7 +66,7 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "vpc_2_to_vpc_1" {
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.this[1].id
 }
 
-# Add route "10.0.0.0/8" to our TGW in all private-RT of our VPCs
+# Add route "10.0.0.0/8" via our TGW in all private-RT of our VPCs
 resource "aws_route" "route" {
   for_each = toset(data.aws_route_tables.this.ids)
 

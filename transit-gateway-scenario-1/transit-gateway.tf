@@ -18,11 +18,11 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "this" {
   vpc_id             = data.aws_vpc.this[count.index].id
 
   tags = {
-    "Name" = "att-${count.index}-rt"
+    "Name" = "att-${count.index}"
   }
 }
 
-# Add route "10.0.0.0/8" to our TGW in all private-RT of our VPCs
+# Add route "10.0.0.0/8" via our TGW in all private-RT of our VPCs
 resource "aws_route" "route" {
   for_each = toset(data.aws_route_tables.this.ids)
 
