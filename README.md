@@ -70,7 +70,7 @@ PING 10.2.1.10 (10.2.1.10) 56(84) bytes of data.
 ```
 Let's create our first Transit gateway in the next step.
 
-## Transit Gateway with three VPCs with full connectivity
+## Scenario 1: Transit Gateway with three VPCs with full connectivity
 In this first scenario, we'll create full connectivity between all our privates subnets of 3 VPCs. 
 
 ![Sc1](assets/tgw-sc-1.png)
@@ -143,7 +143,7 @@ rtt min/avg/max/mdev = 0.261/0.340/0.479/0.098 ms
 ```
 Before to test the next scenario, destroy first with terraform destroy in the same directory.
 
-## Transit Gateway Attachments with specific routing
+## Scenario 2: Transit Gateway Attachments with specific routing
 In the previous scenario all private subnets of all VPC can reach to each other, imagine we need specific connectivities, for example:
 
 - VPC-0: Connects only with VPC-1
